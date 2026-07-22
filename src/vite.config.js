@@ -1,6 +1,20 @@
 // vite.config.js — dev-прокси AirMQ, чтобы обойти CORS локально (docs/API.md §6).
 // В env.local.js тогда можно указать AIRMQ_ENDPOINT = "/airmq".
+import { copyFileSync, mkdirSync } from "node:fs";
+
 export default {
+  plugins: [
+    {
+      // characters.json и sw.js грузятся fetch'ем/register'ом в рантайме — Vite про них
+      // не знает и в dist не кладёт. Доносим руками, иначе прод падает в «мир спит».
+      name: "wv-copy-runtime-files",
+      closeBundle() {
+        mkdirSync("dist/data", { recursive: true });
+        copyFileSync("src/data/characters.json", "dist/data/characters.json");
+        copyFileSync("src/sw.js", "dist/sw.js");
+      },
+    },
+  ],
   server: {
     proxy: {
       "/airmq": {
