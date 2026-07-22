@@ -59,14 +59,18 @@ function normalize(id, loc) {
 // Текущее состояние одного персонажа. Всегда что-то возвращает: сеть → кеш → пустышка.
 export async function getCharacterState(id) {
   const { AIRMQ_TOKEN, AIRMQ_ENDPOINT, REQUEST_TIMEOUT_MS } = await config();
-  if (!AIRMQ_TOKEN || !AIRMQ_ENDPOINT) return fromCache(id, true);
+  // Токен не обязателен: в прод-режиме его добавляет серверный прокси (см. server.js).
+  if (!AIRMQ_ENDPOINT) return fromCache(id, true);
 
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS ?? 10000);
   try {
     const res = await fetch(AIRMQ_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: AIRMQ_TOKEN },
+      headers: {
+        "Content-Type": "application/json",
+        ...(AIRMQ_TOKEN ? { Authorization: AIRMQ_TOKEN } : {}),
+      },
       body: JSON.stringify({ query: CURRENT_QUERY, variables: { id } }),
       signal: ctrl.signal,
     });
