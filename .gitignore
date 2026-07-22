@@ -1,0 +1,19 @@
+# --- Секреты (НИКОГДА не коммитить, D-21/D-50) ---
+config/env.local.js
+*.local.js
+.env
+.env.*
+
+# --- Node / сборка ---
+node_modules/
+dist/
+.vite/
+*.log
+npm-debug.log*
+
+# --- ОС / редакторы ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

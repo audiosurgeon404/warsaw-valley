@@ -1,0 +1,6 @@
+/* Минимальный сброс. Ретро — это приём, а не сломанный бокс-модел. */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+img, canvas { max-width: 100%; display: block; }
+button { font: inherit; cursor: pointer; }
+ul { margin: 0; padding: 0; list-style: none; }

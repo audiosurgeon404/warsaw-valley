@@ -1,0 +1,26 @@
+{
+  "name": "warsaw-valley",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cozy Stardew-Valley-style site on a pixel map of Warsaw, powered by live AirMQ air-quality sensors as characters.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite src --host",
+    "build": "vite build src --outDir ../dist",
+    "preview": "vite preview dist"
+  },
+  "keywords": [
+    "stardew",
+    "pixel-art",
+    "warsaw",
+    "air-quality",
+    "airmq",
+    "2000s",
+    "cozy"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

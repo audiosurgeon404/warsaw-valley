@@ -1,0 +1,43 @@
+/* theme.css — токены палитры (см. docs/DESIGN.md, директива D-11).
+   Новый цвет добавляем ТОЛЬКО сюда и с обоснованием. */
+:root {
+  /* Игровой мир (earthy Stardew) */
+  --sky-day:    #8ec7d2;
+  --sky-set:    #e6a15b;
+  --sky-night:  #2b2d54;
+  --grass:      #6a9c48;
+  --grass-dark: #4b7332;
+  --dirt:       #9c6b3f;
+  --wood:       #7a4b2b;
+  --water:      #4a90c2;
+  --smog:       #b9b6a8;
+  --harvest:    #e0b83e;
+  --berry:      #c2456b;
+
+  /* Обёртка нулевых (Win98) */
+  --panel:      #c0c0c0;
+  --bevel-lt:   #ffffff;
+  --bevel-dk:   #808080;
+  --title:      #000080;
+  --link:       #0000ee;
+  --link-visit: #551a8b;
+
+  --ink:        #1a1a1a;
+}
+
+/* Пиксельная чёткость (D-10) */
+.pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+/* Бевелы в духе окон нулевых */
+.bevel-out {
+  border: 2px solid;
+  border-color: var(--bevel-lt) var(--bevel-dk) var(--bevel-dk) var(--bevel-lt);
+  background: var(--panel);
+}
+.bevel-in {
+  border: 2px solid;
+  border-color: var(--bevel-dk) var(--bevel-lt) var(--bevel-lt) var(--bevel-dk);
+}
+
+a { color: var(--link); }
+a:visited { color: var(--link-visit); }

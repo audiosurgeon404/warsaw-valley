@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warsaw Valley — уютная долина на карте Варшавы</title>
+  <link rel="stylesheet" href="./css/reset.css" />
+  <link rel="stylesheet" href="./css/theme.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+</head>
+<body>
+  <!-- Ретро-окно в стиле нулевых -->
+  <div class="win98" role="application" aria-label="Warsaw Valley">
+    <!-- Синий титул-бар -->
+    <div class="titlebar">
+      <span class="titlebar__title">🌾 Warsaw Valley — v0.1</span>
+      <span class="titlebar__buttons"><i>_</i><i>▢</i><i>×</i></span>
+    </div>
+
+    <!-- Строка новостей мира (наполняется живыми данными) -->
+    <div class="newsbar">
+      <span class="newsbar__track" id="news">
+        ✦ Добро пожаловать в Долину Варшава ✦ мир просыпается… ✦ персонажи: Fiodar H и Dwoch Mieczy ✦
+      </span>
+    </div>
+
+    <!-- Тулбар: музыка по клику (D-14) и часы Варшавы -->
+    <div class="toolbar">
+      <button id="music-btn" type="button" class="btn bevel-out" aria-pressed="false">♪ музыка: выкл</button>
+      <span class="toolbar__spacer"></span>
+      <span id="clock" class="toolbar__clock">🕑 Warszawa —:—</span>
+    </div>
+
+    <!-- Игровая зона: пиксельная сцена долины -->
+    <main class="stage bevel-in">
+      <canvas id="scene" class="pixel" width="320" height="180"
+              role="img" aria-label="Пиксельная карта долины Варшава с персонажами"></canvas>
+      <div class="stage__focus" id="focus">кликни по двору персонажа →</div>
+
+      <!-- Загрузочный экран «à la 2003» -->
+      <div id="loader" class="loader" aria-hidden="true">
+        <div class="loader__box bevel-out">
+          <b>🌾 Warsaw Valley</b>
+          <p>Загружаем долину…</p>
+          <div class="loader__bar bevel-in"><i></i></div>
+          <p class="loader__tip">совет: кликни по двору — узнаешь, чем дышит персонаж</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- HUD: карточки персонажей строятся из characters.json (D-2) -->
+    <section id="hud" class="hud" aria-label="Персонажи">
+      <span class="hud__loading">загрузка воздуха…</span>
+    </section>
+
+    <!-- Азбука воздуха: что значат цифры — для гостей долины -->
+    <section class="abcwin" aria-label="Азбука воздуха">
+      <div class="titlebar titlebar--mini"><span>🌱 Азбука воздуха — что значат эти цифры</span></div>
+      <div class="abc">
+        <details>
+          <summary>🌡 Температура</summary>
+          <p>Насколько тепло сейчас у двора персонажа. От неё красится небо долины:
+          мороз — в ледяное, жара — в закатное золото.</p>
+        </details>
+        <details>
+          <summary>💧 Влажность</summary>
+          <p>Сколько воды растворено в воздухе. Поднимется выше 80&nbsp;% — на долину
+          ляжет туман; выше 90&nbsp;% — по «стеклу» сайта поползут капли.</p>
+        </details>
+        <details>
+          <summary>🌪 Пыль PM10 — крупная</summary>
+          <p>Пылинки с дорог, строек и цветущих деревьев. Дальше носа и горла обычно
+          не залетают — но чихается от них знатно.</p>
+        </details>
+        <details>
+          <summary>🌫 Пыль PM2.5 — мелкая, главная</summary>
+          <p>Дымная пыль от машин и печек, в 30 раз тоньше волоса. Пробирается глубоко
+          в лёгкие — именно по ней долина судит о смоге: до 5 — над двором ясно,
+          после 15 — дымка, после 35 — серая пелена и персонаж грустит.</p>
+        </details>
+        <details>
+          <summary>✨ Пыль PM1 — совсем крошки</summary>
+          <p>Мельчайшие частички, тоньше дыма. Такие маленькие, что умеют проникать
+          из лёгких даже в кровь. Чем меньше цифра — тем спокойнее дышится.</p>
+        </details>
+        <details>
+          <summary>🌀 Давление</summary>
+          <p>Как сильно воздух давит на долину. Резко падает — жди перемены погоды:
+          ветер, дождь, у чувствительных — головную боль.
+          <i>Наши датчики его пока не меряют.</i></p>
+        </details>
+        <details>
+          <summary>☢ Радиоактивность</summary>
+          <p>Невидимые лучи от земли и неба — природный фон есть везде и всегда.
+          0.1–0.3&nbsp;µSv/h — это спокойная норма, как тиканье старых часов.
+          <i>Наши датчики её не меряют.</i></p>
+        </details>
+        <details>
+          <summary>🚗 Оксиды азота (NOx)</summary>
+          <p>Газы из выхлопных труб и котельных. Когда их много — дышится, как на
+          обочине шоссе в час пик. <i>Наши датчики их не меряют.</i></p>
+        </details>
+        <details>
+          <summary>🎨 VOC — летучая химия</summary>
+          <p>Испарения красок, бензина, растворителей и бытовой химии — тот самый
+          «запах ремонта». Мера общей свежести воздуха. <i>Наши датчики её не меряют.</i></p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Гостевая книга (локальная, в духе нулевых) -->
+    <section class="gbwin" aria-label="Гостевая книга">
+      <div class="titlebar titlebar--mini"><span>📖 Гостевая книга — оставь привет персонажам</span></div>
+      <div class="gb">
+        <div id="gb-entries" class="gb__entries bevel-in"></div>
+        <form id="gb-form" class="gb__form">
+          <input id="gb-name" maxlength="24" placeholder="твоё имя" aria-label="Имя" />
+          <input id="gb-msg" maxlength="200" placeholder="привет персонажам…" aria-label="Сообщение" required />
+          <button type="submit" class="btn bevel-out">Подписать ✍</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Подвал в духе нулевых -->
+    <footer class="statusbar">
+      <span>You are visitor #<b id="counter">00001</b></span>
+      <span class="statusbar__mid">Best viewed in 800×600</span>
+      <span class="uc">🚧 under construction 🚧</span>
+    </footer>
+  </div>
+
+  <noscript>
+    <p class="noscript">Долине нужен JavaScript, чтобы дышать. Включи его — и мир оживёт. 🌾</p>
+  </noscript>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

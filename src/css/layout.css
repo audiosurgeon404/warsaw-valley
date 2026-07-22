@@ -1,0 +1,202 @@
+/* layout.css — раскладка. Внешне нулевые, внутри честный Flex/Grid (D-12). */
+
+body {
+  background: #008080; /* классический бирюзовый рабочий стол */
+  font-family: Verdana, Tahoma, "Segoe UI", sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+/* Окно приложения */
+.win98 {
+  width: min(760px, 100%);
+  background: var(--panel);
+  border: 2px solid;
+  border-color: var(--bevel-lt) var(--bevel-dk) var(--bevel-dk) var(--bevel-lt);
+  box-shadow: 3px 3px 0 rgba(0,0,0,.4);
+}
+
+/* Титул-бар */
+.titlebar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(90deg, var(--title), #1084d0);
+  color: #fff; font-weight: bold; font-size: 13px;
+  padding: 3px 6px;
+}
+.titlebar--mini { font-size: 11px; }
+.titlebar__buttons i {
+  display: inline-block; width: 16px; height: 14px; margin-left: 2px;
+  background: var(--panel); color: #000; text-align: center; font-style: normal;
+  border: 1px solid; border-color: var(--bevel-lt) var(--bevel-dk) var(--bevel-dk) var(--bevel-lt);
+}
+
+/* Новостная строка (marquee, уважает reduced-motion) */
+.newsbar { overflow: hidden; background: #000; color: var(--harvest); padding: 3px 0; font-size: 12px; }
+.newsbar__track { display: inline-block; white-space: nowrap; padding-left: 100%; animation: marquee 24s linear infinite; }
+@keyframes marquee { to { transform: translateX(-100%); } }
+
+/* Кнопки-бевелы */
+.btn {
+  font-size: 11px; padding: 3px 10px; color: var(--ink);
+  background: var(--panel);
+}
+.btn:active {
+  border-color: var(--bevel-dk) var(--bevel-lt) var(--bevel-lt) var(--bevel-dk);
+}
+
+/* Тулбар */
+.toolbar {
+  display: flex; align-items: center; gap: 8px;
+  margin: 8px 8px 0; font-size: 11px;
+}
+.toolbar__spacer { flex: 1; }
+.toolbar__clock { color: var(--ink); }
+
+/* Игровая сцена */
+.stage { margin: 8px; background: #000; position: relative; text-align: center; }
+#scene {
+  display: inline-block; width: 100%; height: auto;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+  cursor: pointer;
+}
+.stage__focus {
+  position: absolute; left: 6px; bottom: 6px;
+  font-size: 11px; color: #fff; text-shadow: 1px 1px 0 #000;
+  background: rgba(0,0,0,.45); padding: 2px 6px;
+  pointer-events: none;
+}
+
+/* Капли на «стекле» (влажность > 90%) и снег (мороз) — поверх сцены */
+.stage--drops::after, .stage--snow::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+}
+.stage--drops::after {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.28) 1px, transparent 2.5px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.22) 1px, transparent 2.5px),
+    radial-gradient(circle at 45% 80%, rgba(255,255,255,.25) 1px, transparent 2.5px),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.2) 1px, transparent 2.5px);
+  background-size: 90px 90px, 70px 70px, 110px 110px, 60px 60px;
+}
+.stage--snow::after {
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,.5) 1px, transparent 2px);
+  background-size: 48px 48px, 72px 72px;
+  background-position: 0 0, 24px 12px;
+  animation: snowfall 9s linear infinite;
+}
+@keyframes snowfall { to { background-position: 12px 480px, 60px 504px; } }
+
+/* Загрузочный экран «à la 2003» */
+.loader {
+  position: absolute; inset: 0; z-index: 2;
+  display: grid; place-items: center;
+  background: #008080;
+  transition: opacity .5s ease, visibility .5s;
+}
+.loader--done { opacity: 0; visibility: hidden; }
+.loader__box { padding: 14px 18px; font-size: 12px; text-align: center; min-width: 220px; }
+.loader__box b { font-size: 14px; }
+.loader__box p { margin: 8px 0 6px; }
+.loader__bar { height: 14px; background: #fff; overflow: hidden; position: relative; }
+.loader__bar i {
+  position: absolute; top: 1px; bottom: 1px; left: -40%; width: 40%;
+  background: repeating-linear-gradient(90deg, var(--title) 0 8px, #1084d0 8px 16px);
+  animation: loadbar 1.2s linear infinite;
+}
+@keyframes loadbar { to { left: 100%; } }
+.loader__tip { color: var(--bevel-dk); font-size: 10px; }
+.loader__oops { font-size: 12px; color: #fff; text-shadow: 1px 1px 0 #000; padding: 12px; }
+
+/* HUD карточки — кнопки, строятся из конфига */
+.hud { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 8px 8px; }
+.hud__loading { color: var(--bevel-dk); font-style: italic; font-size: 12px; }
+.card {
+  padding: 6px; text-align: left; font: inherit; color: var(--ink);
+  transition: outline .15s; outline: 2px solid transparent; cursor: pointer;
+}
+.card--selected, .card--active { outline: 2px solid var(--harvest); }
+.card:focus-visible { outline: 2px dotted var(--title); }
+.card__name {
+  display: flex; justify-content: space-between;
+  font-weight: bold; background: var(--title); color: #fff;
+  padding: 2px 6px; margin: -6px -6px 6px;
+}
+.card__mood { font-family: "Courier New", monospace; }
+.card__body { font-size: 12px; line-height: 1.6; min-height: 64px; }
+.card__loading { color: var(--bevel-dk); font-style: italic; }
+.card__row { display: flex; justify-content: space-between; gap: 8px; }
+.card__hint { text-decoration: underline dotted var(--bevel-dk); cursor: help; }
+/* Вердикт под цифрой — сразу понятно, много это или мало и есть ли угроза */
+.card__verdict { font-size: 10px; line-height: 1.4; margin: -2px 0 3px 8px; }
+.verdict--good { color: var(--grass-dark); }
+.verdict--meh  { color: #8a6d1a; } /* тёмный оттенок --harvest: жёлтый нечитаем на сером (D-11: контраст) */
+.verdict--bad  { color: var(--berry); font-weight: bold; }
+.verdict--info { color: var(--bevel-dk); }
+.card__sleep { color: var(--bevel-dk); font-style: italic; }
+.card__stale::after { content: " (кеш)"; color: var(--bevel-dk); font-size: 10px; }
+
+/* Азбука воздуха */
+.abcwin { margin: 0 8px 8px; }
+.abc {
+  padding: 6px; font-size: 12px; line-height: 1.5;
+  border: 2px solid; border-color: var(--bevel-lt) var(--bevel-dk) var(--bevel-dk) var(--bevel-lt);
+  background: var(--panel);
+}
+.abc details { border-bottom: 1px dotted var(--bevel-dk); }
+.abc details:last-child { border-bottom: none; }
+.abc summary { cursor: pointer; padding: 4px 2px; font-weight: bold; }
+.abc summary:hover { color: var(--title); }
+.abc p { margin: 2px 6px 8px 18px; }
+.abc i { color: var(--bevel-dk); }
+
+/* Гостевая книга */
+.gbwin { margin: 0 8px 8px; }
+.gb { padding: 6px; border: 2px solid; border-color: var(--bevel-lt) var(--bevel-dk) var(--bevel-dk) var(--bevel-lt); background: var(--panel); }
+.gb__entries {
+  background: #fff; max-height: 160px; overflow-y: auto;
+  padding: 6px; font-size: 12px; margin-bottom: 6px;
+}
+.gb__empty { color: var(--bevel-dk); font-style: italic; margin: 2px; }
+.gb__entry { border-bottom: 1px dotted var(--bevel-dk); padding: 4px 2px; }
+.gb__entry:last-child { border-bottom: none; }
+.gb__head { display: flex; justify-content: space-between; gap: 8px; }
+.gb__when { color: var(--bevel-dk); font-size: 10px; }
+.gb__msg { margin: 2px 0 0; word-break: break-word; }
+.gb__form { display: flex; gap: 6px; flex-wrap: wrap; }
+.gb__form input {
+  font: inherit; font-size: 12px; padding: 3px 6px;
+  border: 2px solid; border-color: var(--bevel-dk) var(--bevel-lt) var(--bevel-lt) var(--bevel-dk);
+  background: #fff;
+}
+#gb-name { width: 130px; }
+#gb-msg { flex: 1; min-width: 160px; }
+
+/* Статус-бар */
+.statusbar {
+  display: flex; justify-content: space-between; gap: 8px;
+  font-size: 11px; padding: 3px 6px; margin: 8px;
+  border: 1px solid; border-color: var(--bevel-dk) var(--bevel-lt) var(--bevel-lt) var(--bevel-dk);
+}
+.statusbar__mid { color: var(--bevel-dk); }
+.uc { animation: ucblink 2.4s steps(1) infinite; } /* медленно и мирно, не эпилепсия */
+@keyframes ucblink { 50% { opacity: .35; } }
+
+.noscript { color: #fff; text-align: center; padding: 12px; }
+
+/* Уважение к prefers-reduced-motion (D-40) */
+@media (prefers-reduced-motion: reduce) {
+  .newsbar__track { animation: none; padding-left: 8px; }
+  .stage--snow::after { animation: none; }
+  .uc { animation: none; }
+  .loader__bar i { animation: none; left: 30%; }
+}
+
+@media (max-width: 520px) {
+  .hud { grid-template-columns: 1fr; }
+  .statusbar { flex-direction: column; align-items: flex-start; }
+}
