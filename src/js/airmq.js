@@ -3,14 +3,17 @@
 // нормализованный объект состояния персонажа (форма — см. docs/ARCHITECTURE.md §3).
 
 // Токен и настройки грузим динамически, чтобы отсутствие env.local.js не роняло сайт (D-24).
+// Локально env.local.js есть (токен ходит из браузера напрямую). В проде (Render) его нет —
+// фолбэк на "/airmq": тонкий серверный прокси (server.js) сам добавит токен из env.
+// ВАЖНО: фолбэк-эндпоинт должен оставаться "/airmq", иначе прод молча уйдёт в «мир спит».
 let CFG = null;
 async function config() {
   if (CFG) return CFG;
   try {
     CFG = await import("../../config/env.local.js");
   } catch {
-    console.warn("[airmq] нет config/env.local.js — работаем без сети (скопируй env.example.js).");
-    CFG = { AIRMQ_TOKEN: "", AIRMQ_ENDPOINT: "", REQUEST_TIMEOUT_MS: 10000 };
+    console.info("[airmq] нет env.local.js — ходим через прокси /airmq (прод-режим).");
+    CFG = { AIRMQ_TOKEN: "", AIRMQ_ENDPOINT: "/airmq", REQUEST_TIMEOUT_MS: 10000 };
   }
   return CFG;
 }
